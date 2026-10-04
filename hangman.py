@@ -1,61 +1,147 @@
 import random
 
-# Predefined words
-words = ["python", "computer", "program", "coding", "developer"]
+# Words and clues
+word_clues = {
+    "python": "A programming language",
+    "computer": "An electronic machine",
+    "developer": "A person who creates software",
+    "coding": "Writing programs",
+    "keyboard": "Used to type on a computer"
+}
 
-# Randomly select a word
-word = random.choice(words)
+# Hangman stages
+hangman_stages = [
+r"""
+  +---+
+  |   |
+      |
+      |
+      |
+      |
+=========
+""",
+r"""
+  +---+
+  |   |
+  O   |
+      |
+      |
+      |
+=========
+""",
+r"""
+  +---+
+  |   |
+  O   |
+  |   |
+      |
+      |
+=========
+""",
+r"""
+  +---+
+  |   |
+  O   |
+ /|   |
+      |
+      |
+=========
+""",
+r"""
+  +---+
+  |   |
+  O   |
+ /|\  |
+      |
+      |
+=========
+""",
+r"""
+  +---+
+  |   |
+  O   |
+ /|\  |
+ /    |
+      |
+=========
+""",
+r"""
+  +---+
+  |   |
+  O   |
+ /|\  |
+ / \  |
+      |
+=========
+"""
+]
+
+# Select random word
+word = random.choice(list(word_clues.keys()))
+clue = word_clues[word]
 
 guessed_letters = []
 wrong_guesses = 0
 max_wrong_guesses = 6
 
-print("🎮 Welcome to Hangman Game!")
-print("Guess the word one letter at a time.")
+print("\n" + "=" * 40)
+print("          HANGMAN GAME")
+print("=" * 40)
+
+print("\nCLUE:", clue)
 print("You have 6 wrong guesses.")
 
 while wrong_guesses < max_wrong_guesses:
 
-    # Display the word
-    display_word = ""
+    # Show hangman
+    print(hangman_stages[wrong_guesses])
+
+    # Show word
+    display = ""
 
     for letter in word:
         if letter in guessed_letters:
-            display_word += letter + " "
+            display += letter + " "
         else:
-            display_word += "_ "
+            display += "_ "
 
-    print("\nWord:", display_word)
+    print("WORD:", display)
 
-    # Check if word is completely guessed
+    print("Guessed letters:", guessed_letters)
+
+    # Check win
     if all(letter in guessed_letters for letter in word):
-        print("🎉 Congratulations! You guessed the word!")
+        print("\n🎉 YOU WIN!")
         print("The word was:", word)
         break
 
-    # Get user's guess
-    guess = input("Enter a letter: ").lower()
+    # Get guess
+    guess = input("\nEnter a letter: ").lower()
 
-    # Check input
+    # Validate
     if len(guess) != 1 or not guess.isalpha():
-        print("❌ Please enter only one letter.")
+        print("Please enter only one letter!")
         continue
 
-    # Check repeated letter
+    # Already guessed
     if guess in guessed_letters:
-        print("⚠️ You already guessed that letter.")
+        print("You already guessed that letter!")
         continue
 
     guessed_letters.append(guess)
 
-    # Check whether guess is correct
+    # Correct guess
     if guess in word:
-        print("✅ Correct guess!")
+        print("✅ Correct!")
+
+    # Wrong guess
     else:
         wrong_guesses += 1
-        print("❌ Wrong guess!")
-        print("Wrong guesses:", wrong_guesses, "/", max_wrong_guesses)
+        print("❌ Wrong!")
+        print("Chances left:", max_wrong_guesses - wrong_guesses)
 
-else:
-    print("\n😢 Game Over!")
+# Game over
+if wrong_guesses == max_wrong_guesses:
+    print(hangman_stages[wrong_guesses])
+    print("\n💀 GAME OVER!")
     print("The correct word was:", word)
